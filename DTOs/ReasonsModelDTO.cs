@@ -5,10 +5,9 @@ using System.Threading.Tasks;
 
 namespace AttendanceRegister2.DTOs
 {
-    public class RolesModelDTO
+    public class ReasonsModelDTO
     {
-        public string Id { get; set; }
+        public string Reasons { get; set; }
 
-        public string Department { get; set; }
     }
 }

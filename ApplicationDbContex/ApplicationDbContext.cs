@@ -14,11 +14,12 @@ namespace AttendanceRegister2.ApplicationDbContex
         {
         }
 
+        public DbSet<AttendanceModel> Attendance { get; set; }
+        public DbSet<ReasonsModel> Reasons { get; set; }
+        public DbSet<RulesModel> Rules { get; set; }
+        public DbSet<RolesModel> Department { get; set; }
+        public DbSet<StaffsReasonsTableModel> StaffsReasons { get; set; }
 
-        //protected override void OnModelCreating(ModelBuilder builder)
-        //{
-        //    base.OnModelCreating(builder);
-        //    builder.Entity<RolesModel>().HasData(new RolesModel=);
-        //}
+       
     }
 }

@@ -4,14 +4,16 @@ using AttendanceRegister2.ApplicationDbContex;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace AttendanceRegister2.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211122162148_AttendanceRegister2")]
+    partial class AttendanceRegister2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -69,12 +71,7 @@ namespace AttendanceRegister2.Migrations
                     b.Property<string>("Department")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("RulesModelId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("RulesModelId");
 
                     b.ToTable("Department");
                 });
@@ -86,23 +83,17 @@ namespace AttendanceRegister2.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("EndOfDayGracePeriod")
-                        .HasColumnType("int");
+                    b.Property<DateTime?>("EndOfDay")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("EndOfDayHour")
-                        .HasColumnType("int");
+                    b.Property<DateTime?>("EndOfDayGracePeriod")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("EndOfDayMinutes")
-                        .HasColumnType("int");
+                    b.Property<DateTime?>("StartOfDay")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("StartOfDayGracePeriod")
-                        .HasColumnType("int");
-
-                    b.Property<int>("StartOfDayHour")
-                        .HasColumnType("int");
-
-                    b.Property<int>("StartOfDayMinutes")
-                        .HasColumnType("int");
+                    b.Property<DateTime?>("StartOfDayGracePeriod")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -166,6 +157,9 @@ namespace AttendanceRegister2.Migrations
                     b.Property<string>("ProfilePicture")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("RulesId")
+                        .HasColumnType("int");
+
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
@@ -188,6 +182,8 @@ namespace AttendanceRegister2.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.HasIndex("RulesId");
 
                     b.ToTable("AspNetUsers");
                 });
@@ -353,11 +349,11 @@ namespace AttendanceRegister2.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("AttendanceRegister2.Model.RolesModel", b =>
+            modelBuilder.Entity("AttendanceRegister2.Model.StaffModel", b =>
                 {
                     b.HasOne("AttendanceRegister2.Model.RulesModel", "RulesModel")
                         .WithMany()
-                        .HasForeignKey("RulesModelId")
+                        .HasForeignKey("RulesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

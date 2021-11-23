@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AttendanceRegister2.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20211112201533_AttendanceRegister2")]
-    partial class AttendanceRegister2
+    [Migration("20211123094118_rulesmodell")]
+    partial class rulesmodell
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -20,6 +20,85 @@ namespace AttendanceRegister2.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.12")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("AttendanceRegister2.Model.AttendanceModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("FirstName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("StaffId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("TimeIn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("TimeOut")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Attendance");
+                });
+
+            modelBuilder.Entity("AttendanceRegister2.Model.ReasonsModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Reasons")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Reasons");
+                });
+
+            modelBuilder.Entity("AttendanceRegister2.Model.RolesModel", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Department")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Department");
+                });
+
+            modelBuilder.Entity("AttendanceRegister2.Model.RulesModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime?>("EndOfDay")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("EndOfDayGracePeriod")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("StartOfDay")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("StartOfDayGracePeriod")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Rules");
+                });
 
             modelBuilder.Entity("AttendanceRegister2.Model.StaffModel", b =>
                 {
@@ -78,6 +157,9 @@ namespace AttendanceRegister2.Migrations
                     b.Property<string>("ProfilePicture")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("RulesModelId")
+                        .HasColumnType("int");
+
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
@@ -101,7 +183,39 @@ namespace AttendanceRegister2.Migrations
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
+                    b.HasIndex("RulesModelId");
+
                     b.ToTable("AspNetUsers");
+                });
+
+            modelBuilder.Entity("AttendanceRegister2.Model.StaffsReasonsTableModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("FirstName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Reasons")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("StaffId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("TimeIn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("TimeOut")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("StaffsReasons");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -233,6 +347,15 @@ namespace AttendanceRegister2.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
+                });
+
+            modelBuilder.Entity("AttendanceRegister2.Model.StaffModel", b =>
+                {
+                    b.HasOne("AttendanceRegister2.Model.RulesModel", "RulesModel")
+                        .WithMany()
+                        .HasForeignKey("RulesModelId");
+
+                    b.Navigation("RulesModel");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
