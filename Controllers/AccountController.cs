@@ -42,6 +42,7 @@ namespace AttendanceRegister2.Controllers
         }
 
 
+<<<<<<< HEAD
         [HttpGet]
         public ActionResult<StaffModel> GetAll()
         {
@@ -119,6 +120,30 @@ namespace AttendanceRegister2.Controllers
         [HttpPost("register")]
 
         public async Task<IActionResult> Register([FromForm] StaffModelDTO model, [FromForm] RegisterModel register)// its throwing an error
+=======
+
+
+        [HttpPost("Roles")]
+        public async Task<IActionResult> Registerr()
+        {
+            if (!_roleManager.RoleExistsAsync(DropDown.Admin).GetAwaiter().GetResult())
+            {
+                await _roleManager.CreateAsync(new IdentityRole(DropDown.Admin));
+                await _roleManager.CreateAsync(new IdentityRole(DropDown.SoftwareDevelopers));
+                await _roleManager.CreateAsync(new IdentityRole(DropDown.SoftwareTesters));
+                await _roleManager.CreateAsync(new IdentityRole(DropDown.IndustrialTraining));
+                await _roleManager.CreateAsync(new IdentityRole(DropDown.OfficeCustodians));
+                await _roleManager.CreateAsync(new IdentityRole(DropDown.Trainiee));
+            }
+            return Ok();
+        }
+
+
+
+        [HttpPost("register")]
+
+        public async Task<IActionResult> Register([FromForm] StaffModelDTO model, [FromForm] RegisterModel register)
+>>>>>>> 4b8b4600b6cb367ebb9e37c1a477cbec33f1948f
         {
             try
             {
@@ -140,7 +165,11 @@ namespace AttendanceRegister2.Controllers
                     if (result.Succeeded)
                     {
                         await _userManager.AddToRoleAsync(staff, model.Department);
+<<<<<<< HEAD
                        // return Ok(new { userName = register.UserName });
+=======
+                        return Ok(new { userName = register.UserName });
+>>>>>>> 4b8b4600b6cb367ebb9e37c1a477cbec33f1948f
                     }
                     //else
                     //{
@@ -158,6 +187,7 @@ namespace AttendanceRegister2.Controllers
         }
 
 
+<<<<<<< HEAD
         [HttpPut("UpdateStaffLoginInf0")]//the password isnt changing
         public async Task<IActionResult> EditLoginInfo(string Email, [FromForm] RegisterModel register)
         {
@@ -256,6 +286,56 @@ namespace AttendanceRegister2.Controllers
 
                 return BadRequest(ex);
             }
+=======
+        [HttpPut("UpdateStaffLoginInf0")]
+        public async Task<IActionResult> EditLoginInfo(string Email, [FromForm] RegisterModel register)
+        {
+            if (ModelState.IsValid)
+            {
+                StaffModel user = new StaffModel();
+
+                //user.UserName = register.UserName;
+                //user.Email = register.UserName;
+
+                var editPassword = _db.Users
+                          .Where(u => u.UserName==Email)
+                          .Select(u => u.Id)
+                          .FirstOrDefault();
+
+                //var users = await _userManager.FindByIdAsync(del);
+
+
+                //users.UserName = register.UserName;
+
+
+                //var result = await _userManager.UpdateAsync(users);
+
+
+                //if (result.Succeeded)
+                //{
+                //   // await _userManager.AddToRoleAsync(staff, model.Department);
+                //     return Ok(new { userName = register.UserName });
+                //}
+                // await _userManager.UpdateAsync(user);
+                //await _db.SaveChangesAsync();
+
+
+
+
+                //UserManager<IdentityUser> userManager =
+                //  new UserManager<IdentityUser>(new UserStore<IdentityUser>());
+
+                var users = _userManager.FindByIdAsync(editPassword);
+                
+
+                   await _userManager.RemovePasswordAsync(user);
+                   await _userManager.AddPasswordAsync(user, "newpassword");
+                
+
+
+            }
+            return Ok();
+>>>>>>> 4b8b4600b6cb367ebb9e37c1a477cbec33f1948f
 
         }
 
@@ -263,6 +343,7 @@ namespace AttendanceRegister2.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromForm] LoginModel login)
         {
+<<<<<<< HEAD
             try
             {
                 if (ModelState.IsValid)
@@ -287,6 +368,23 @@ namespace AttendanceRegister2.Controllers
             {
 
                 return BadRequest(ex);
+=======
+            if (ModelState.IsValid)
+            {
+                var result = await _signInManager.PasswordSignInAsync(login.Email, login.Password, false, lockoutOnFailure: false);
+                if (result.Succeeded)
+                {
+                    return Ok(new { userName = login.Email });
+                }
+                else
+                {
+                    return BadRequest(new { Error = "Invalid Username or Password" });
+                }
+            }
+            else
+            {
+                return BadRequest(ModelState);
+>>>>>>> 4b8b4600b6cb367ebb9e37c1a477cbec33f1948f
             }
         }
 
@@ -297,7 +395,10 @@ namespace AttendanceRegister2.Controllers
             return NoContent();
         }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 4b8b4600b6cb367ebb9e37c1a477cbec33f1948f
         [HttpDelete("delete")]
         public async Task<IActionResult> Delete(string Id)
         {
@@ -313,7 +414,11 @@ namespace AttendanceRegister2.Controllers
                             .Where(u => u.StaffId == Id)
                             .Select(u => u.Id)
                             .FirstOrDefault();
+<<<<<<< HEAD
 
+=======
+               
+>>>>>>> 4b8b4600b6cb367ebb9e37c1a477cbec33f1948f
 
                 //get User Data from del
                 var user = await _userManager.FindByIdAsync(del);
@@ -324,7 +429,11 @@ namespace AttendanceRegister2.Controllers
                 {
                     return NotFound();
                 }
+<<<<<<< HEAD
 
+=======
+               
+>>>>>>> 4b8b4600b6cb367ebb9e37c1a477cbec33f1948f
                 await _userManager.DeleteAsync(user);
                 await _db.SaveChangesAsync();
                 return Ok();
@@ -335,10 +444,69 @@ namespace AttendanceRegister2.Controllers
                 return BadRequest(ex);
 
 
+<<<<<<< HEAD
 
             }
         }
 
+=======
+               
+            }
+        }
+
+        [HttpPut("updateStaffInfo")]
+        public async Task<IActionResult> Update(string Id,[FromForm] StaffModelDTO model)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var staff = _mapper.Map<StaffModel>(model);
+
+                    var del = _db.Users
+                           .Where(u => u.StaffId == Id)
+                           .Select(u => u.Id)
+                           .FirstOrDefault();
+                    
+                    
+                    //get User Data from del
+                    var users = await _userManager.FindByIdAsync(del);
+                   
+                    staff.DateOfBirth = model.DateOfBirth;
+                    staff.FirstName = model.FirstName;
+                    staff.LastName = model.LastName;
+                    staff.Gender = model.Gender;
+                    staff.PhoneNumber = model.PhoneNumber;
+                   
+
+                    if (model.ProfilePicture != null)
+                    {
+                        staff.ProfilePicture = await _fileStorageService.SaveFile(containerName, model.ProfilePicture);
+                    }
+
+                    var result=await _userManager.UpdateAsync(users);
+
+
+                   // var result = await _userManager.CreateAsync(user);
+                    if (result.Succeeded)
+                    {
+                        await _userManager.AddToRoleAsync(staff, model.Department);
+                    }
+                    await _db.SaveChangesAsync();
+                }
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(ex);
+            }
+
+        }
+
+
+
+>>>>>>> 4b8b4600b6cb367ebb9e37c1a477cbec33f1948f
     }
 }
 

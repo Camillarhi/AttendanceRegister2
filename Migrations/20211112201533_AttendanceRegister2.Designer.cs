@@ -4,14 +4,16 @@ using AttendanceRegister2.ApplicationDbContex;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace AttendanceRegister2.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211112201533_AttendanceRegister2")]
+    partial class AttendanceRegister2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -19,88 +21,6 @@ namespace AttendanceRegister2.Migrations
                 .HasAnnotation("ProductVersion", "5.0.12")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-<<<<<<< HEAD
-            modelBuilder.Entity("AttendanceRegister2.Model.AttendanceModel", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("FirstName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LastName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StaffId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("TimeIn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("TimeOut")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Attendance");
-                });
-
-            modelBuilder.Entity("AttendanceRegister2.Model.ReasonsModel", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Reasons")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Reasons");
-                });
-
-            modelBuilder.Entity("AttendanceRegister2.Model.RolesModel", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Department")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Department");
-                });
-
-            modelBuilder.Entity("AttendanceRegister2.Model.RulesModel", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<DateTime?>("EndOfDay")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("EndOfDayGracePeriod")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("StartOfDay")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("StartOfDayGracePeriod")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Rules");
-                });
-
-=======
->>>>>>> 4b8b4600b6cb367ebb9e37c1a477cbec33f1948f
             modelBuilder.Entity("AttendanceRegister2.Model.StaffModel", b =>
                 {
                     b.Property<string>("Id")
@@ -184,39 +104,6 @@ namespace AttendanceRegister2.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
-<<<<<<< HEAD
-            modelBuilder.Entity("AttendanceRegister2.Model.StaffsReasonsTableModel", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("FirstName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LastName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Reasons")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StaffId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("TimeIn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("TimeOut")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("StaffsReasons");
-                });
-
-=======
->>>>>>> 4b8b4600b6cb367ebb9e37c1a477cbec33f1948f
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")

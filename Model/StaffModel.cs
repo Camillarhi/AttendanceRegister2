@@ -2,7 +2,10 @@
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
+<<<<<<< HEAD
 using System.ComponentModel.DataAnnotations.Schema;
+=======
+>>>>>>> 4b8b4600b6cb367ebb9e37c1a477cbec33f1948f
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -21,6 +24,7 @@ namespace AttendanceRegister2.Model
 
         public string ProfilePicture { get; set; }
 
+<<<<<<< HEAD
        // [ForeignKey(nameof(RulesModel))]
 
         //public int RulesModelId { get; set; }
@@ -28,6 +32,8 @@ namespace AttendanceRegister2.Model
         //public RulesModel RulesModel { get; set; }
 
 
+=======
+>>>>>>> 4b8b4600b6cb367ebb9e37c1a477cbec33f1948f
 
         
     }
