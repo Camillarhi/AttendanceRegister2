@@ -14,13 +14,11 @@ namespace AttendanceRegister2.Model
 
         public string Department { get; set; }
 
+
         [ForeignKey(nameof(RulesModel))]
 
         public int RulesModelId { get; set; }
 
-       // public RulesModel RulesModel { get; set; }
-
-
-
+      
     }
 }

@@ -43,7 +43,6 @@ namespace AttendanceRegister2.Controllers
             }
             var obj = _db.Department.Find(Id);
 
-
             if (obj == null)
             {
                 return NotFound();

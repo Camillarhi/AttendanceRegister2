@@ -9,6 +9,8 @@ namespace AttendanceRegister2.DTOs
     {
         public string Id { get; set; }
 
+        public string Id { get; set; }
+
         public string Department { get; set; }
     }
 }

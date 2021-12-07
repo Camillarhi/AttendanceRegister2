@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace AttendanceRegister2.Model
 {
@@ -25,5 +23,6 @@ namespace AttendanceRegister2.Model
         public DateTime? TimeIn { get; set; }
         
         public DateTime? TimeOut { get; set; }
+        
     }
 }

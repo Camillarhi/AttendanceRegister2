@@ -21,7 +21,6 @@ namespace AttendanceRegister2.Model
 
         public string ProfilePicture { get; set; }
 
-
         [ForeignKey(nameof(SubRolesModel.SubDepartment))]
 
         public string SubDepartment { get; set; }

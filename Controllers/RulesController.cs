@@ -86,7 +86,6 @@ namespace AttendanceRegister2.Controllers
 
         public ActionResult Put(int Id, [FromBody] RulesModel rulesModel)
         {
-
             if (ModelState.IsValid)
             {
                 var rules = _db.Rules.Find(Id);

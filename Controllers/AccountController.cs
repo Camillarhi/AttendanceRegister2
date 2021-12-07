@@ -29,9 +29,6 @@ namespace AttendanceRegister2.Controllers
         SignInManager<StaffModel> _signInManager;
         RoleManager<IdentityRole> _roleManager;
 
-        private List<DropDown> dropDowns { get; set; }
-        // private List<Staff> staffs { get; set; }
-
         public AccountController(ApplicationDbContext db, IFileStorageService fileStorageService, IMapper mapper, UserManager<StaffModel> userManager,
         SignInManager<StaffModel> signInManager, RoleManager<IdentityRole> roleManager)
         {
@@ -42,7 +39,6 @@ namespace AttendanceRegister2.Controllers
             _mapper = mapper;
             _fileStorageService = fileStorageService;
         }
-
 
         [HttpGet]
         public ActionResult<StaffModel> GetAll()
@@ -121,6 +117,7 @@ namespace AttendanceRegister2.Controllers
         [HttpPost("register")]
 
         public async Task<IActionResult> Register([FromForm] StaffModelDTO model)// create another endpoint for register and the staffid will be a foreign key
+
         {
             try
             {
@@ -160,8 +157,13 @@ namespace AttendanceRegister2.Controllers
                     var result = await _userManager.UpdateAsync(newStaff2);
                     if (result.Succeeded)
                     {
+
                         await _userManager.AddToRoleAsync(newStaff2, model.Department);
                        // return Ok(new { userName = register.UserName });
+
+                        await _userManager.AddToRoleAsync(staff, model.Department);
+                       // return Ok(new { userName = register.UserName });
+
                     }
                     //else
                     //{
@@ -207,6 +209,8 @@ namespace AttendanceRegister2.Controllers
 
 
 
+       
+
         [HttpPut("UpdateStaffLoginInf0")]//the password isnt changing
         public async Task<IActionResult> EditLoginInfo(string Email, [FromForm] RegisterModel register)
         {
@@ -248,7 +252,6 @@ namespace AttendanceRegister2.Controllers
         }
 
 
-        
        
 
         [HttpPut("updateStaffInfo")]//not working for now
@@ -328,34 +331,25 @@ namespace AttendanceRegister2.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginModel login)
         {
+           
             try
             {
                 if (ModelState.IsValid)
                 {
-
                     var result = await _signInManager.PasswordSignInAsync(login.Email, login.Password, false, lockoutOnFailure: false);
                     if (result.Succeeded)
                     {
-                        var jwt = new JwtSecurityToken();
-                        return Ok(new
-                        {
-                            userName = login.Email,
-                            token = new JwtSecurityTokenHandler().WriteToken(jwt)
-                        });
+                        return Ok(new { userName = login.Email });
                     }
                     else
                     {
                         return BadRequest(new { Error = "Invalid Username or Password" });
                     }
-
-                   
                 }
                 else
                 {
                     return BadRequest(ModelState);
                 }
-
-
             }
 
             catch (Exception ex)
@@ -405,6 +399,7 @@ namespace AttendanceRegister2.Controllers
         [HttpPost]
         [Route("Change-Password")]
         public async Task<IActionResult> ChangePassword([FromForm] ChangePasswordModel model)
+
         {
             var user = await _userManager.FindByEmailAsync(model.Email);
             if (user == null)
@@ -421,6 +416,7 @@ namespace AttendanceRegister2.Controllers
             {
                 var errors = new List<string>();
 
+
                 foreach (var error in result.Errors)
                 {
                     errors.Add(error.Description);
@@ -429,6 +425,11 @@ namespace AttendanceRegister2.Controllers
             }
             return Ok();
         }
+
+                //var del = _db.Users
+                //            .Where(u => u.StaffId == Id)
+                //            .Select(u => u.Id)
+                //            .FirstOrDefault();
 
 
         //reset admin password
@@ -460,6 +461,10 @@ namespace AttendanceRegister2.Controllers
                     errors.Add(error.Description);
                 }
                 return StatusCode(StatusCodes.Status500InternalServerError);
+
+                await _userManager.DeleteAsync(user);
+                await _db.SaveChangesAsync();
+                return Ok();
             }
             return Ok();
         }
@@ -507,7 +512,9 @@ namespace AttendanceRegister2.Controllers
                     errors.Add(error.Description);
                 }
                 return StatusCode(StatusCodes.Status500InternalServerError);
+
             }
+            
             return Ok();
 
         }

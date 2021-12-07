@@ -21,7 +21,6 @@ namespace AttendanceRegister2.ApplicationDbContex
         public DbSet<SubRolesModel> SubDepartment { get; set; }
         public DbSet<CompanyModel> CompanyName { get; set; }
         public DbSet<StaffsReasonsTableModel> StaffsReasons { get; set; }
-
        
     }
 }

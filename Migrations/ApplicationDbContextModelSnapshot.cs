@@ -18,7 +18,6 @@ namespace AttendanceRegister2.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.12")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
             modelBuilder.Entity("AttendanceRegister2.Model.AttendanceModel", b =>
                 {
                     b.Property<int>("Id")
@@ -121,7 +120,6 @@ namespace AttendanceRegister2.Migrations
 
                     b.ToTable("Rules");
                 });
-
             modelBuilder.Entity("AttendanceRegister2.Model.StaffModel", b =>
                 {
                     b.Property<string>("Id")
@@ -207,7 +205,6 @@ namespace AttendanceRegister2.Migrations
 
                     b.ToTable("AspNetUsers");
                 });
-
             modelBuilder.Entity("AttendanceRegister2.Model.StaffsReasonsTableModel", b =>
                 {
                     b.Property<int>("Id")
