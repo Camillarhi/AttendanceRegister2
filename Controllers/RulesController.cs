@@ -15,7 +15,7 @@ namespace AttendanceRegister2.Controllers
     [ApiController]
     public class RulesController : ControllerBase
     {
-        private readonly ApplicationDbContext _db;
+       private readonly ApplicationDbContext _db;
 
         public RulesController(ApplicationDbContext db)
         {
@@ -28,21 +28,22 @@ namespace AttendanceRegister2.Controllers
             var rules = (from user in _db.Rules
                          select new RulesModel
                          {
-                            StartOfDayHour=user.StartOfDayHour,
-                            StartOfDayMinutes=user.StartOfDayMinutes,
-                             StartOfDayGracePeriod=user.StartOfDayGracePeriod,
-                             EndOfDayHour=user.EndOfDayHour,
-                             EndOfDayMinutes=user.EndOfDayMinutes,
-                             EndOfDayGracePeriod=user.EndOfDayGracePeriod
+                             StartOfDayHour = user.StartOfDayHour,
+                             StartOfDayMinutes = user.StartOfDayMinutes,
+                             StartOfDayGracePeriod = user.StartOfDayGracePeriod,
+                             EndOfDayHour = user.EndOfDayHour,
+                             EndOfDayMinutes = user.EndOfDayMinutes,
+                             EndOfDayGracePeriod = user.EndOfDayGracePeriod
                          }
                            ).ToList();
+            
             return Ok(rules);
         }
 
 
         [HttpGet("{Id}")]
 
-        public ActionResult Get(int Id)
+        public ActionResult Get(int? Id)
         {
             if (Id == 0)
             {
@@ -67,12 +68,12 @@ namespace AttendanceRegister2.Controllers
             {
                 var rules = new RulesModel()
                 {
-                    StartOfDayHour=rulesModel.StartOfDayHour,
-                    StartOfDayMinutes=rulesModel.StartOfDayMinutes,
-                    StartOfDayGracePeriod=rulesModel.StartOfDayGracePeriod,
-                    EndOfDayHour=rulesModel.EndOfDayHour,
-                    EndOfDayMinutes=rulesModel.EndOfDayMinutes,
-                    EndOfDayGracePeriod=rulesModel.EndOfDayGracePeriod
+                    StartOfDayHour = rulesModel.StartOfDayHour,
+                    StartOfDayMinutes = rulesModel.StartOfDayMinutes,
+                    StartOfDayGracePeriod = rulesModel.StartOfDayGracePeriod,
+                    EndOfDayHour = rulesModel.EndOfDayHour,
+                    EndOfDayMinutes = rulesModel.EndOfDayMinutes,
+                    EndOfDayGracePeriod = rulesModel.EndOfDayGracePeriod
                 };
                 _db.Rules.Add(rules);
                 _db.SaveChanges();
@@ -85,7 +86,7 @@ namespace AttendanceRegister2.Controllers
 
         public ActionResult Put(int Id, [FromBody] RulesModel rulesModel)
         {
-            
+
             if (ModelState.IsValid)
             {
                 var rules = _db.Rules.Find(Id);

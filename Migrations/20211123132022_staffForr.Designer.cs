@@ -4,14 +4,16 @@ using AttendanceRegister2.ApplicationDbContex;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace AttendanceRegister2.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211123132022_staffForr")]
+    partial class staffForr
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -44,21 +46,6 @@ namespace AttendanceRegister2.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Attendance");
-                });
-
-            modelBuilder.Entity("AttendanceRegister2.Model.CompanyModel", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("CompanyName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("CompanyName");
                 });
 
             modelBuilder.Entity("AttendanceRegister2.Model.ReasonsModel", b =>
@@ -185,9 +172,6 @@ namespace AttendanceRegister2.Migrations
                     b.Property<string>("StaffId")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("SubDepartment")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
 
@@ -236,24 +220,6 @@ namespace AttendanceRegister2.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("StaffsReasons");
-                });
-
-            modelBuilder.Entity("AttendanceRegister2.Model.SubRolesModel", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Department")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SubDepartment")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("SubDepartment");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

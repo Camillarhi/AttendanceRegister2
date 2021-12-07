@@ -14,7 +14,7 @@ namespace AttendanceRegister2.Model
 
         [ForeignKey(nameof(ReasonsModel.Reasons))]
         public string Reasons { get; set; }
-
+                       
         [ForeignKey(nameof(StaffModel.StaffId))]
         public string StaffId { get; set; }
 

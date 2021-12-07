@@ -19,7 +19,7 @@ namespace AttendanceRegister2.Controllers
         RoleManager<IdentityRole> _roleManager;
 
 
-        public RolesController(ApplicationDbContext db,RoleManager<IdentityRole> roleManager)
+        public RolesController(ApplicationDbContext db, RoleManager<IdentityRole> roleManager)
         {
             _db = db;
             _roleManager = roleManager;
@@ -37,12 +37,12 @@ namespace AttendanceRegister2.Controllers
 
         public ActionResult Get(string Id)
         {
-            if (Id == null )
+            if (Id == null)
             {
                 return NotFound();
             }
             var obj = _db.Department.Find(Id);
-            
+
 
             if (obj == null)
             {
@@ -53,15 +53,19 @@ namespace AttendanceRegister2.Controllers
 
         [HttpPost]
 
-        public async Task<IActionResult> Post([FromBody] RolesModelDTO rolesModel)
+        public async Task<IActionResult> Post([FromBody] RolesModel rolesModel)
         {
             if (ModelState.IsValid)
             {
                 var roles = new RolesModel()
                 {
-                    Id=rolesModel.Id,
-                    Department=rolesModel.Department
+                    Id = rolesModel.Id,
+                    Department = rolesModel.Department,
+                    RulesModelId=rolesModel.RulesModelId
+
+
                 };
+
                 _db.Department.Add(roles);
                 await _roleManager.CreateAsync(new IdentityRole(roles.Department));
                 _db.SaveChanges();
@@ -69,10 +73,10 @@ namespace AttendanceRegister2.Controllers
             return Ok();
         }
 
-        
+
         [HttpPut]
 
-        public async Task<IActionResult> Put(string Name,[FromBody] RolesModel rolesModel)
+        public async Task<IActionResult> Put(string Name, [FromBody] RolesModel rolesModel)
         {
             if (ModelState.IsValid)
             {
@@ -80,15 +84,16 @@ namespace AttendanceRegister2.Controllers
                 //var roleId =  _db.Roles.Where(u => u)
                 //              .Select(u => u.Id).FirstOrDefault();
                 departmentId.Department = rolesModel.Department;
+                departmentId.RulesModelId = rolesModel.RulesModelId;
                 var roleId = await _roleManager.FindByNameAsync(Name);
 
                 if (_db.Roles.Any(r => r.Name == Name))
                 {
                     roleId.Name = rolesModel.Department;
                     await _roleManager.UpdateAsync(roleId);
-                   // var manager = new RoleManager<IdentityRole>(Name);
+                    // var manager = new RoleManager<IdentityRole>(Name);
 
-                }               
+                }
 
                 _db.Department.Update(departmentId);
                 _db.SaveChanges();
@@ -103,7 +108,7 @@ namespace AttendanceRegister2.Controllers
             var departmentId = _db.Department.Find(Name);
             var roleId = await _roleManager.FindByNameAsync(Name);
 
-            if (_db.Roles.Any(r => r.Name == Name) && departmentId!=null)
+            if (_db.Roles.Any(r => r.Name == Name) && departmentId != null)
             {
                 await _roleManager.DeleteAsync(roleId);
                 // var manager = new RoleManager<IdentityRole>(Name);

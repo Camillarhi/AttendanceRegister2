@@ -3,11 +3,13 @@ using AttendanceRegister2.DTOs;
 using AttendanceRegister2.HelperClass;
 using AttendanceRegister2.Model;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -118,7 +120,7 @@ namespace AttendanceRegister2.Controllers
 
         [HttpPost("register")]
 
-        public async Task<IActionResult> Register([FromForm] StaffModelDTO model, [FromForm] RegisterModel register)// its throwing an error
+        public async Task<IActionResult> Register([FromForm] StaffModelDTO model)// create another endpoint for register and the staffid will be a foreign key
         {
             try
             {
@@ -126,20 +128,39 @@ namespace AttendanceRegister2.Controllers
                 {
                     var staff = _mapper.Map<StaffModel>(model);
 
+                    var newStaff = _db.Users.Where(u => u.UserName == model.UserName).Select(u => u.Id).FirstOrDefault();
+                    var newStaff2 = await _userManager.FindByIdAsync(newStaff);
+                    newStaff2.DateOfBirth = model.DateOfBirth;
+                    newStaff2.FirstName = model.FirstName;
+                    newStaff2.Gender = model.Gender;
+                    newStaff2.LastName = model.LastName;
+                    newStaff2.PhoneNumber = model.PhoneNumber;
+                    newStaff2.SubDepartment = model.SubDepartment;
+
+                    var getCompanyName = _db.CompanyName.FirstOrDefault();
+                    var companyName = getCompanyName.CompanyName.Substring(0, 3);
+                             
                     StaffModel user = new StaffModel();
 
-                    staff.UserName = register.UserName;
-                    staff.Email = register.UserName;
+                   
+                    var departmentName = model.Department.Substring(0, 3);
+                    var subDepartmentName = model.SubDepartment.Substring(0, 3);
+                    var rnd = new Random();
+                    int num = rnd.Next(1000);
+                   
+
+                    newStaff2.StaffId = companyName + departmentName + subDepartmentName+num;
+
 
                     if (model.ProfilePicture != null)
                     {
-                        staff.ProfilePicture = await _fileStorageService.SaveFile(containerName, model.ProfilePicture);
+                        newStaff2.ProfilePicture = await _fileStorageService.SaveFile(containerName, model.ProfilePicture);
                     }
 
-                    var result = await _userManager.CreateAsync(staff, register.Password);
+                    var result = await _userManager.UpdateAsync(newStaff2);
                     if (result.Succeeded)
                     {
-                        await _userManager.AddToRoleAsync(staff, model.Department);
+                        await _userManager.AddToRoleAsync(newStaff2, model.Department);
                        // return Ok(new { userName = register.UserName });
                     }
                     //else
@@ -156,6 +177,34 @@ namespace AttendanceRegister2.Controllers
                 return BadRequest(ex);
             }
         }
+
+        [HttpPost("Create User")]
+        public async Task<IActionResult> CreateUser([FromForm] RegisterModel register)// create another endpoint for register and the staffid will be a foreign key
+        {
+            if (ModelState.IsValid){
+                var newUser = new RegisterModel();
+                var staff = new StaffModel();
+                staff.UserName = register.UserName;
+                staff.Email = register.UserName;
+
+                //newUser.StaffId = register.StaffId;
+                //var staff = _db.Users.Where(u => u.StaffId == register.StaffId).Select(u => u.Id).FirstOrDefault();
+                //var user = await _userManager.FindByIdAsync(staff);
+
+                //user.Email = register.UserName;
+                //user.UserName = register.UserName;
+                var result = await _userManager.CreateAsync(staff,register.Password);
+                //await _userManager.AddPasswordAsync(user, register.Password);
+
+
+            }
+            return Ok();
+           
+
+
+        }
+
+
 
 
         [HttpPut("UpdateStaffLoginInf0")]//the password isnt changing
@@ -212,24 +261,38 @@ namespace AttendanceRegister2.Controllers
                    // var staff = _mapper.Map<StaffModel>(model);
                     var staff = new StaffModel();
 
+                    var getCompanyName = _db.CompanyName.FirstOrDefault();
+                    var companyName = getCompanyName.CompanyName.Substring(0, 3);
+
+
+
+                    var departmentName = model.Department.Substring(0, 3);
+                    var subDepartmentName = model.SubDepartment.Substring(0, 3);
+                    var rnd = new Random();
+                    int num = rnd.Next(1000);
+
+
+
 
                     //to get the Id of the staff from the database
                     var del = _db.Users
                            .Where(u => u.StaffId == Id)
                            .Select(u => u.Id)
                            .FirstOrDefault();
-
+                    
 
                     //get User Data from del (using the Id to get the column)
                     var users = await _userManager.FindByIdAsync(del);
+                   // users.StaffId=
                    
                     users.DateOfBirth = model.DateOfBirth;
                     users.FirstName = model.FirstName;
                     users.LastName = model.LastName;
                     users.Gender = model.Gender;
                     users.PhoneNumber = model.PhoneNumber;
-                    
-                   
+                    users.StaffId = companyName + departmentName + subDepartmentName + num;
+
+
 
                     if (model.ProfilePicture != null)
                     {
@@ -238,7 +301,9 @@ namespace AttendanceRegister2.Controllers
 
                     //update the column with the new information
                     var result=await _userManager.UpdateAsync(users);
-                    await _userManager.RemoveFromRoleAsync(users, model.Department);
+                    var role = await _userManager.GetRolesAsync(users);
+                   
+                    await _userManager.RemoveFromRolesAsync(users, role);
 
 
 
@@ -261,34 +326,74 @@ namespace AttendanceRegister2.Controllers
 
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromForm] LoginModel login)
+        public async Task<IActionResult> Login([FromBody] LoginModel login)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
+
                     var result = await _signInManager.PasswordSignInAsync(login.Email, login.Password, false, lockoutOnFailure: false);
                     if (result.Succeeded)
                     {
-                        return Ok(new { userName = login.Email });
+                        var jwt = new JwtSecurityToken();
+                        return Ok(new
+                        {
+                            userName = login.Email,
+                            token = new JwtSecurityTokenHandler().WriteToken(jwt)
+                        });
                     }
                     else
                     {
                         return BadRequest(new { Error = "Invalid Username or Password" });
                     }
+
+                   
                 }
                 else
                 {
                     return BadRequest(ModelState);
                 }
+
+
             }
 
             catch (Exception ex)
             {
-
                 return BadRequest(ex);
             }
         }
+
+
+        //[HttpPost("login")]
+        //public async Task<IActionResult> Login([FromForm] LoginModel login)
+        //{
+        //    try
+        //    {
+        //        if (ModelState.IsValid)
+        //        {
+        //            var result = await _signInManager.PasswordSignInAsync(login.Email, login.Password, false, lockoutOnFailure: false);
+        //            if (result.Succeeded)
+        //            {
+        //                return Ok(new { userName = login.Email });
+        //            }
+        //            else
+        //            {
+        //                return BadRequest(new { Error = "Invalid Username or Password" });
+        //            }
+        //        }
+        //        else
+        //        {
+        //            return BadRequest(ModelState);
+        //        }
+        //    }
+
+        //    catch (Exception ex)
+        //    {
+
+        //        return BadRequest(ex);
+        //    }
+        //}
 
         [HttpPost("logout")]
         public async Task<IActionResult> Logout()
@@ -297,6 +402,115 @@ namespace AttendanceRegister2.Controllers
             return NoContent();
         }
 
+        [HttpPost]
+        [Route("Change-Password")]
+        public async Task<IActionResult> ChangePassword([FromForm] ChangePasswordModel model)
+        {
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            if (string.Compare(model.NewPassword, model.ConfirmNewPAssword) != 0)
+            {
+                return NotFound();
+            }
+
+            var result = await _userManager.ChangePasswordAsync(user, model.CurrentPassword, model.NewPassword);
+            if (!result.Succeeded)
+            {
+                var errors = new List<string>();
+
+                foreach (var error in result.Errors)
+                {
+                    errors.Add(error.Description);
+                }
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            return Ok();
+        }
+
+
+        //reset admin password
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        [Route("reset-password-admin")]
+        public async Task<IActionResult> resetPasswordForAdmin([FromForm] ResetPasswordModelForAdmin reset)
+        {
+            var user = await _userManager.FindByEmailAsync(reset.Email);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            if (string.Compare(reset.NewPassword, reset.ConfirmNewPassword) != 0)
+            {
+                return NotFound();
+            }
+
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+            var result = await _userManager.ResetPasswordAsync(user, token, reset.NewPassword);
+
+            if (!result.Succeeded)
+            {
+                var errors = new List<string>();
+
+                foreach (var error in result.Errors)
+                {
+                    errors.Add(error.Description);
+                }
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            return Ok();
+        }
+
+        [HttpPost]
+        [Route("reset-password-token")]
+        public async Task<IActionResult> ResetPasswordToken([FromForm] ResetPasswordTokenModel reset)
+        {
+            var user = await _userManager.FindByEmailAsync(reset.Email);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+            return Ok(new { token = token });
+        }
+
+        [HttpPost]
+        [Route("reset-password")]
+        public async Task<IActionResult> ResetPassword([FromForm] ResetPasswordModel reset)
+        {
+            var user = await _userManager.FindByEmailAsync(reset.Email);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            if (string.Compare(reset.NewPassword, reset.ConfirmNewPassword) != 0)
+            {
+                return NotFound();
+            }
+            if (string.IsNullOrEmpty(reset.Token))
+            {
+                return NotFound();
+            }
+
+            var result = await _userManager.ResetPasswordAsync(user, reset.Token, reset.NewPassword);
+            if (!result.Succeeded)
+            {
+                var errors = new List<string>();
+
+                foreach (var error in result.Errors)
+                {
+                    errors.Add(error.Description);
+                }
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            return Ok();
+
+        }
 
         [HttpDelete("delete")]
         public async Task<IActionResult> Delete(string Id)

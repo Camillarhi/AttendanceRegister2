@@ -18,6 +18,8 @@ namespace AttendanceRegister2.ApplicationDbContex
         public DbSet<ReasonsModel> Reasons { get; set; }
         public DbSet<RulesModel> Rules { get; set; }
         public DbSet<RolesModel> Department { get; set; }
+        public DbSet<SubRolesModel> SubDepartment { get; set; }
+        public DbSet<CompanyModel> CompanyName { get; set; }
         public DbSet<StaffsReasonsTableModel> StaffsReasons { get; set; }
 
        

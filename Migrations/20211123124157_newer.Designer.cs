@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AttendanceRegister2.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20211123105257_roleForeign")]
-    partial class roleForeign
+    [Migration("20211123124157_newer")]
+    partial class newer
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -71,12 +71,7 @@ namespace AttendanceRegister2.Migrations
                     b.Property<string>("Department")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("RulesModelId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("RulesModelId");
 
                     b.ToTable("Department");
                 });
@@ -353,17 +348,6 @@ namespace AttendanceRegister2.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
-                });
-
-            modelBuilder.Entity("AttendanceRegister2.Model.RolesModel", b =>
-                {
-                    b.HasOne("AttendanceRegister2.Model.RulesModel", "RulesModel")
-                        .WithMany()
-                        .HasForeignKey("RulesModelId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("RulesModel");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

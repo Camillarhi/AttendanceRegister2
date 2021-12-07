@@ -21,14 +21,15 @@ namespace AttendanceRegister2.Model
 
         public string ProfilePicture { get; set; }
 
-       // [ForeignKey(nameof(RulesModel))]
 
-        //public int RulesModelId { get; set; }
+        [ForeignKey(nameof(SubRolesModel.SubDepartment))]
 
-        //public RulesModel RulesModel { get; set; }
-
+        public string SubDepartment { get; set; }
 
 
-        
+
+
+
+
     }
 }

@@ -7,19 +7,15 @@ using System.Threading.Tasks;
 
 namespace AttendanceRegister2.Model
 {
-    public class RolesModel
+    public class SubRolesModel
     {
         [Key]
-        public string Id { get; set; }
+        public int Id { get; set; }
 
+        [ForeignKey(nameof(RolesModel.Department))]
         public string Department { get; set; }
 
-        [ForeignKey(nameof(RulesModel))]
-
-        public int RulesModelId { get; set; }
-
-       // public RulesModel RulesModel { get; set; }
-
+        public string SubDepartment { get; set; }
 
 
     }
