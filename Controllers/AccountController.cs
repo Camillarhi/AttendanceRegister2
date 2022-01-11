@@ -159,17 +159,16 @@ namespace AttendanceRegister2.Controllers
                     {
 
                         await _userManager.AddToRoleAsync(newStaff2, model.Department);
-                       // return Ok(new { userName = register.UserName });
+                        // return Ok(new { userName = register.UserName });
 
-                        await _userManager.AddToRoleAsync(staff, model.Department);
-                       // return Ok(new { userName = register.UserName });
+                        // return Ok(new { userName = register.UserName });
+                        await _db.SaveChangesAsync();
 
                     }
                     //else
                     //{
                     //    return BadRequest();
                     //}
-                    await _db.SaveChangesAsync();
                 }
                 return Ok();
             }
@@ -181,7 +180,7 @@ namespace AttendanceRegister2.Controllers
         }
 
         [HttpPost("Create User")]
-        public async Task<IActionResult> CreateUser([FromForm] RegisterModel register)// create another endpoint for register and the staffid will be a foreign key
+        public async Task<IActionResult> CreateUser([FromBody] RegisterModel register)// create another endpoint for register and the staffid will be a foreign key
         {
             if (ModelState.IsValid){
                 var newUser = new RegisterModel();
@@ -211,7 +210,7 @@ namespace AttendanceRegister2.Controllers
 
        
 
-        [HttpPut("UpdateStaffLoginInf0")]//the password isnt changing
+        [HttpPut("UpdateStaffLoginInfo")]//the password isnt changing
         public async Task<IActionResult> EditLoginInfo(string Email, [FromForm] RegisterModel register)
         {
             try
@@ -461,11 +460,10 @@ namespace AttendanceRegister2.Controllers
                     errors.Add(error.Description);
                 }
                 return StatusCode(StatusCodes.Status500InternalServerError);
-
-                await _userManager.DeleteAsync(user);
-                await _db.SaveChangesAsync();
-                return Ok();
+                                
             }
+            await _userManager.DeleteAsync(user);
+            await _db.SaveChangesAsync();
             return Ok();
         }
 
@@ -527,8 +525,8 @@ namespace AttendanceRegister2.Controllers
                 throw new ArgumentException($"'{nameof(Id)}' cannot be null or empty.", nameof(Id));
             }
 
-            try
-            {
+            try { 
+             
 
                 var del = _db.Users
                             .Where(u => u.StaffId == Id)

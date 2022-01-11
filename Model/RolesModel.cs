@@ -10,7 +10,7 @@ namespace AttendanceRegister2.Model
     public class RolesModel
     {
         [Key]
-        public string Id { get; set; }
+        public int Id { get; set; }
 
         public string Department { get; set; }
 

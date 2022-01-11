@@ -35,9 +35,9 @@ namespace AttendanceRegister2.Controllers
 
         [HttpGet("{Id}")]
 
-        public ActionResult Get(string Id)
+        public ActionResult Get(int? Id)
         {
-            if (Id == null)
+            if (Id == 0|| Id==null)
             {
                 return NotFound();
             }
@@ -52,13 +52,12 @@ namespace AttendanceRegister2.Controllers
 
         [HttpPost]
 
-        public async Task<IActionResult> Post([FromBody] RolesModel rolesModel)
+        public async Task<IActionResult> Post([FromBody] RolesModelDTO rolesModel)
         {
             if (ModelState.IsValid)
             {
                 var roles = new RolesModel()
                 {
-                    Id = rolesModel.Id,
                     Department = rolesModel.Department,
                     RulesModelId=rolesModel.RulesModelId
 

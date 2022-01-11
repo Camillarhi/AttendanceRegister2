@@ -93,7 +93,7 @@ namespace AttendanceRegister2.Controllers
 
         [HttpPost("TimeIn")]
 
-        public async Task<IActionResult> TimeIn(string Id, int? Ids)
+        public async Task<IActionResult> TimeIn(string Id, string reason)
         {
             try
             {
@@ -106,7 +106,7 @@ namespace AttendanceRegister2.Controllers
 
                 var del = _db.Users.Where(u => u.StaffId == Id).FirstOrDefault();
                 var dels = _db.Users.Where(u => u.StaffId == Id).Select(u => u.Id).FirstOrDefault();
-                var reasonsId = _db.Reasons.Find(Ids);
+                var reasonsId = _db.Reasons.Where(u=> u.Reasons==reason).FirstOrDefault();
                 var rule = _db.Rules.FirstOrDefault();
                 var roleName = _db.Department.FirstOrDefault();
                 var users = await _userManager.FindByIdAsync(dels);
@@ -189,15 +189,15 @@ namespace AttendanceRegister2.Controllers
         }
 
         [HttpPut("TimeOut")]
-        public async Task<IActionResult> TimeOut(string Id, int? Ids, [FromForm] AttendanceModel attendance)
+        public async Task<IActionResult> TimeOut(string Id, string reason, [FromForm] AttendanceModel attendance)
         {
             try
             {
                 var user = new AttendanceModel();
-                var reason = new ReasonsModel();
+                var reasons = new ReasonsModel();
                 var userId = _db.Attendance.Find(attendance.Id);
                 var del = _db.Users.Where(u => u.StaffId == Id).FirstOrDefault();
-                var reasonsId = _db.Reasons.Find(Ids);
+                var reasonsId = _db.Reasons.Where(u => u.Reasons == reason).FirstOrDefault();
                 var dels = _db.Users.Where(u => u.StaffId == Id).Select(u => u.Id).FirstOrDefault();
                 var rule = _db.Rules.FirstOrDefault();
                 var roleName = _db.Department.FirstOrDefault();
@@ -232,7 +232,7 @@ namespace AttendanceRegister2.Controllers
                                     attendance.LastName = userId.LastName;
                                     attendance.FirstName = userId.FirstName;
                                     attendance.StaffId = userId.StaffId;
-                                    reason.Reasons = reasonsId.Reasons;
+                                    reasons.Reasons = reasonsId.Reasons;
 
                                     var staffReasons = new StaffsReasonsTableModel();
                                     staffReasons.FirstName = del.FirstName;

@@ -33,11 +33,11 @@ namespace AttendanceRegister2
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddDbContext<ApplicationDbContext>(options =>
-               options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"), builder => {
-                   builder.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
+            services.AddControllers();
+            var sqlConnectionString = "User ID=postgres;Password=rita20;Server=localhost;Port=5432;Database=AttendanceRegister";
 
-            })
+            services.AddDbContext<ApplicationDbContext>(options =>
+               options.UseNpgsql(sqlConnectionString)
            );
 
             services.ConfigureJWT(Configuration);
@@ -57,7 +57,6 @@ namespace AttendanceRegister2
 
             services.AddAutoMapper(typeof(Startup));
             
-            services.AddControllers();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
@@ -102,6 +101,8 @@ namespace AttendanceRegister2
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "AttendanceRegister2 v1"));
             }
+            app.UseAuthentication();
+
 
             app.UseHttpsRedirection();
 
@@ -109,7 +110,6 @@ namespace AttendanceRegister2
 
             app.UseRouting();
 
-            app.UseAuthentication();
 
             app.UseAuthorization();
 
